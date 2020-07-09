@@ -1,8 +1,27 @@
+import axios from 'axios'
+;
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+const cards = document.querySelector('.cards');
+axios
+  .get("https://api.github.com/users/roboblox")
+  .then((res) => {
+    console.log(res.data)
+const card = cardMaker(res.data);
+cards.appendChild(card);
+console.log(cards)
+  
+
+    // WHATEVER WE WANT TO DO WITH THE RESPONSE NEEDS TO BE DONE RIGHT HERE
+    // DOM manipulation etc
+  })
+  .catch(function (error) {
+    // debugger
+    console.log(error)
+  })
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +47,13 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
+
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +74,65 @@ const followersArray = [];
       </div>
     </div>
 */
+function cardMaker(data){
+  const card = document.createElement('div')
+  const image = document.createElement('img')
+  const cardInfo = document.createElement('div')
+  const name = document.createElement('h3')
+  const userName = document.createElement('p')
+  const location = document.createElement('p')
+  const profile = document.createElement('p')
+  const link = document.createElement('a')
+  const followers = document.createElement('p')
+  const following = document.createElement('p')
+  const bio = document.createElement('p')
+
+
+  card.classList.add("card");
+  cardInfo.classList.add("card-info");
+  name.classList.add("name");
+  userName.classList.add("userName");
+  location.classList.add("location");
+  profile.classList.add("profile");
+  link.classList.add("address");
+  followers.classList.add("followers");
+  following.classList.add("following");
+  bio.classList.add("bio");
+
+  name.textContent = data.name;
+  image.src = data.avatar_url;
+  userName.textContent = 'User Name: ' + data.login;
+  location.textContent = data.location;
+  profile.textContent = data.profile;
+  link.textContent = 'Page: ' + data.html_url;
+  followers.textContent = 'Followers: ' + data.followers;
+  following.textContent = 'Following: ' + data.following;
+  bio.textContent = data.bio;
+
+  card.append(image, cardInfo);
+  cardInfo.append(name, userName, location, profile, followers, following, bio);
+  profile.append(link);
+
+  return card;
+}
+
+followersArray.forEach((element) => {
+  axios
+    .get(`https://api.github.com/users/${element}`)
+    .then((res) => {
+    const followers = cardMaker(res.data);
+
+      cards.appendChild(followers);
+      console.log(cards);
+      
+    })
+    .catch((error) => {
+      console.log(
+        "something went wrong, hopefully the error tells us what",
+        error
+      );
+    });
+});
 
 /*
   List of LS Instructors Github username's:
